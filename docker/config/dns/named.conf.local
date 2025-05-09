@@ -1,0 +1,5 @@
+zone "MyBodyTracker.com" {
+    type master;
+    file "/var/lib/bind/db.MyBodyTracker.com";
+};
+

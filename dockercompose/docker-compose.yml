@@ -1,4 +1,4 @@
-version: "3.8"
+﻿
 
 services:
   php:
@@ -8,6 +8,9 @@ services:
     container_name: mybt_php
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./php:/var/www/html
     depends_on:
       - db
 
@@ -16,11 +19,13 @@ services:
     container_name: mybt_mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: demo
+      MYSQL_DATABASE: my_body_tracker
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+    volumes:
+      - mybt_mysql_data:/var/lib/mysql
     ports:
-      - "3307:3306"
+      - "3306:3306"
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -29,11 +34,19 @@ services:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: rootpassword
     ports:
-      - "8080:8080"
+      - "8080:80"
 
   dns:
     image: ubuntu/bind9
     container_name: mybt_dns
     ports:
-      - "5353:53/tcp"
-      - "5353:53/udp"
+      - "53:53/tcp"
+      - "53:53/udp"
+      #- "5354:53/tcp"
+      #- "5354:53/udp"
+    volumes:
+      - ./docker/config/dns:/etc/bind/
+      - ./docker/zones:/var/lib/bind/
+
+volumes:
+  mybt_mysql_data:

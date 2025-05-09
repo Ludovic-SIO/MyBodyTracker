@@ -1,0 +1,17 @@
+myhostname = mail.labo.tld
+mydomain   = labo.tld
+inet_interfaces = all
+inet_protocols  = ipv4
+
+# ➊ On passe en mode "virtual mailbox"
+virtual_mailbox_domains = $mydomain
+virtual_mailbox_base    = /var/mail/virtmail
+virtual_mailbox_maps    = hash:/etc/postfix/vmailbox
+virtual_uid_maps        = static:5000
+virtual_gid_maps        = static:5000
+
+# ➋ Livraison par LMTP vers Dovecot
+virtual_transport = lmtp:unix:private/dovecot-lmtp
+
+# (on supprime/ commente home_mailbox = Maildir/)
+smtpd_banner = $myhostname ESMTP
