@@ -1,0 +1,33 @@
+[ req ]
+default_bits       = 2048
+default_keyfile    = certificat.key
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+x509_extensions    = v3_ca
+string_mask        = utf8only
+
+[ req_distinguished_name ]
+countryName                 = Country Name (2 letter code)
+countryName_default        = FR
+stateOrProvinceName        = State or Province Name (full name)
+stateOrProvinceName_default = Ile-de-France
+localityName               = Locality Name (eg, city)
+localityName_default       = Paris
+organizationName           = Organization Name (eg, company)
+organizationName_default   = MyBodyTracker
+commonName                  = Common Name (e.g. server FQDN or YOUR name)
+commonName_max             = 64
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ v3_ca ]
+subjectAltName = @alt_names
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+
+[ alt_names ]
+DNS.1 = MyBodyTracker.com
+DNS.2 = www.MyBodyTracker.com  
+
+

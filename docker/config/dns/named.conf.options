@@ -1,0 +1,18 @@
+options {
+    directory "/var/lib/bind";  # Répertoire où les fichiers de données BIND (zones, etc.) sont stockés.
+    
+    recursion yes;  # Permet la récursion, c'est-à-dire que le serveur DNS peut effectuer des requêtes récursives pour les clients.
+    
+    allow-recursion { any; };  # Permet à n'importe quelle adresse IP de faire une requête récursive. Attention à la sécurité !
+    
+    forwarders {  # Spécifie les serveurs DNS auxquels les requêtes non résolues seront envoyées.
+        8.8.8.8;  # Google DNS (Serveur primaire)
+        8.8.4.4;  # Google DNS (Serveur secondaire)
+    };
+    
+    dnssec-validation auto;  # Active la validation DNSSEC automatiquement.
+    
+    auth-nxdomain no;  # Permet de signaler les requêtes non résolues comme "NXDOMAIN" (domaine inexistant).
+    
+    listen-on-v6 { any; };  # Permet à BIND d'écouter sur toutes les interfaces IPv6.
+};
