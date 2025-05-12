@@ -1,0 +1,533 @@
+body {
+    margin: 0;
+    display: flex;
+    background-color: #f8f9fb;
+    font-family: 'Work Sans', sans-serif;
+}
+
+.sidebar {
+    width: 80px;
+    background-color: #ffffff;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    height: 100%;
+}
+
+.logo {
+    writing-mode: vertical-rl;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+.logo-mbt {
+    height: 79px;
+}
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.box {
+    width: 380px;
+    height: 200px;
+    background-color: #0C8E7F;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 16px;
+    position: relative;
+    left: 730px;
+}
+
+.box-profil {
+    width: 335px;
+    height: 69px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+
+
+.box-profil img {
+    width: 55px;
+    height: 57px;
+    margin-top: 6px;
+    margin-left: 10px;
+}
+
+
+.box-profil p {
+    margin-top: -53px;
+    margin-left: 90px;
+    top: 6%;
+    font-size: larger;
+    font-weight: 600;
+}
+
+.box-profil-user {
+    width: 335px;
+    height: 69px;
+    background-color: #f5f5f5;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.sidebar nav ul li {
+    margin: 20px 0;
+}
+
+.sidebar nav ul li a {
+    text-decoration: none;
+    font-size: 24px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 105px;
+    background-color: #FAFAFA;
+}
+
+header h1 {
+    margin: -77px 0 20px;
+}
+
+.stats {
+    display: flex
+;
+    gap: 25px;
+    margin-bottom: 30px;
+    height: 40%;
+    width: 79%;
+    margin-left: 6px;
+}
+
+
+.stats h3 {
+    font-weight: 450;
+    position: relative;
+    top: -23%;
+}
+
+.stats img {
+    position: relative;
+    left: -75px;
+    top: 4%;
+    margin-left: -2px;
+}
+
+
+
+.card {
+    flex: 1;
+    background: #8fe6e6;
+    color: #f8f9fb;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    font-weight: 500;
+    height: 50%;
+    box-shadow: 9px 16px 22px rgb(0 0 0 / 25%);
+}
+
+.card span {
+    right: 25%;
+    top: 0%;
+    font-weight: 600;
+    position: relative;
+}
+
+.card p {
+    padding: 0%;
+    position: absolute;
+    margin-left: 130px;
+    width: 70px;
+    font-size: xx-large;
+    font-weight: 300;
+}
+
+
+.card.highlighted {
+    background: rgb(166, 238, 166);
+}
+
+.card.highlighted img {
+    left: -60px;
+    top: 4%;
+}
+
+.card.red {
+    background: #FA5A7D;
+}
+
+.card.red img {
+    margin-left: 25px;
+    top: 5px;
+    font-weight: 600;
+    position: relative;
+}
+
+
+.card.purple {
+    background: #8676FE;
+}
+
+
+.card.purple img {
+    margin-left: 15px;
+    top: 5px;
+}
+
+img .vector-image{
+    left: -50%;
+}
+
+.activity-progress {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 45px;
+    margin-left: 296px;
+    left: -270px;
+    position: relative;
+}
+
+.activity, .progression {
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    height: 250px;
+}
+
+.comparison {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.comparaison-profil {
+    position: relative;
+    width: 400px;
+    height: 200px;
+    left: 25%;
+    background-color: #0C8E7F; /* bleu */
+    border-radius: 15px;
+    margin: 50px auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.votre-profil {
+    position: absolute;
+    top: 25px;
+    width: 300px;
+    left: 35px;
+    height: 45px;
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.autres-profil {
+    position: absolute;
+    width: 300px;
+    top: 110px;
+    left: 35px;
+    height: 45px;
+    background-color: white;  
+    padding: 10px 15px;  
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.votre-profil img {
+    width: 40px;
+    height: 40px;
+    left: 20px;
+    top: 13px;
+    position: absolute;
+    border-radius: 50px;
+}
+
+.votre-profil p {
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+
+.profile-sidebar {
+    width: 300px;
+    background: #F4F5F5;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: fixed;
+    height: 100%;
+    margin-left: 79%;
+}
+
+
+
+
+.user-info {
+    text-align: center;
+}
+
+.user-info img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    right: 255px;
+    position: absolute;
+    object-fit: cover;
+}
+
+.info {
+    position: relative;
+    width: 315px;
+    height: 85px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 16px;
+    position: relative;
+    left: -25px;
+}
+
+.info-poids {
+    margin-left: -50%;
+    font-weight: 600;
+}
+
+.info-taille {
+    margin-left: 0%;
+    font-weight: 600;
+}
+
+.info-age{
+    margin-left: 50%;
+    font-weight: 600;
+}
+
+.info-poids span {
+    top: 51px;
+    font-weight: 545;
+    position: relative;
+    left: -15px;
+    font-size: larger;
+    color: #6B6E7B;
+
+}
+
+
+.info-taille span {
+    top: -20px;
+    font-weight: 545;
+    position: relative;
+    left: 7px;
+    font-size: larger;
+    color: #6B6E7B;
+
+}
+
+.info-age span {
+    top: -92px;
+    font-weight: 545;
+    position: relative;
+    left: 15px;
+    font-size: larger;
+    color: #6B6E7B;
+
+}
+
+.info-poids p {
+    margin-left: 3%;
+    font-weight: 550;
+    top: -10px;
+    color: #6B6E7B;
+    position: relative;
+}
+
+.info-taille p {
+    margin-left: 15%;
+    font-weight: 550;
+    top: -81px;
+    position: relative;
+    color: #6B6E7B;
+
+}
+
+.info-age p {
+    margin-left: 50%;
+    font-weight: 550;
+    top: -152px;
+    position: relative;
+    color: #6B6E7B;
+
+}
+
+
+
+.objectives-course, .monthly-progress, .scheduled {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.objectives-poids, .monthly-progress, .scheduled {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+}
+.Course {
+    position: relative;
+    width: 315px;
+    height: 85px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 16px;
+    position: relative;
+    left: -25px;
+}
+
+.Poids{
+    position: relative;
+    width: 315px;
+    height: 85px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 16px;
+    position: relative;
+    left: -25px;
+}
+.Course p {
+    margin-left: 25%;
+    font-weight: 600;
+}
+
+.Poids p {
+    margin-left: 20%;
+    font-weight: 600;
+}
+
+.Course img {
+    position: absolute;
+    top: 15px;
+    right: 255px;
+}
+
+.Poids img {
+    position: absolute;
+    top: 25px;
+    right: 269px;
+}
+
+.scheduled ul {
+    list-style: none;
+    padding: 0;
+}
+
+
+
+
+
+
+
+.activity input[type="week"] {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+    width: 96px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 17px;
+    padding: 5px 10px;
+    margin-left: 385px;
+    top: 12%;
+    position: absolute;
+}
+
+
+
+.progression input[type="week"] {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+    width: 96px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 17px;
+    padding: 5px 10px;
+    margin-left: 385px;
+    top: 12%;
+    position: absolute;
+}
+
+
+
+
+
+
+.chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 35px;
+    height: 150px;
+    padding: 20px;
+}
+
+  .bar {
+    width: 30px;
+    background-color: #e6effb;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  .bar span {
+    position: absolute;
+    bottom: -20px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+  }
+
+
+  .bar:hover {
+    background-color: #2f7d78;
+  }
+
+
+  .bar:hover::before {
+    content: "1h";
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #1e2d45;
+    color: white;
+    font-size: 12px;
+    padding: 3px 6px;
+    border-radius: 5px;
+  }
+
+  /* Exemple de hauteurs personnalisées */
+  .h20 { height: 40px; }
+  .h40 { height: 80px; }
+  .h60 { height: 120px; }
+  .h80 { height: 160px; }
+  .h100 { height: 160px; }
+  

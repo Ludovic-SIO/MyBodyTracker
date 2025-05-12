@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Body Tracker</title>
+    <link rel="stylesheet" href="profil.css">
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="logo"><img class="logo-mbt" src="logo (2).png" alt="logo"></div>
+        <nav>
+            <ul>
+                <li><a href="accueil.php" ><img src="Frame 6 (1).png" alt="Accueil-img"></a></li>
+                <li><a href="#"><img src="Two-user.png" alt="communauté"></a></li>
+                <li><a href="#"><img src="profil.png" alt="profil-img"></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1>BON RETOUR </h1>
+        </header>
+
+        <section class="stats">
+            <div class="card"><img src="wallet.png" alt="running-img"> <span>POIDS</span><p>Poids</p></div>
+            <div class="card highlighted"><img src="wallet.png" alt="running-img"> <span>TAILLE</span><p>cm</p></div>
+            <div class="card red"><img src="Cal.png" alt="feu-img"><span>CALORIES</span> </div>
+            <div class="card purple"><img src="Water.png" alt="coeur-img"><span>CALCUL</span> </div>
+        </section>
+
+        <section class="activity-progress">
+            <div class="activity">
+                <h2>Votre Activité</h2>
+                <input type="week" id="semaine" name="semaine">
+                <div class="chart">
+                    <div class="bar h20"><span>lun</span></div>
+                    <div class="bar h60"><span>mar</span></div>
+                    <div class="bar h40"><span>mer</span></div>
+                    <div class="bar h60"><span>jeu</span></div>
+                    <div class="bar h100 highlight"><span>ven</span></div>
+                    <div class="bar h60"><span>sam</span></div>
+                    <div class="bar h40"><span>dim</span></div>
+
+                    <script>
+                        const bars = document.querySelectorAll('.bar');
+                    
+                        bars.forEach(bar => {
+                          bar.addEventListener('click', () => {
+                            const currentHeight = parseFloat(bar.style.height);
+                            const currentValue = (currentHeight / 130).toFixed(1); // Assuming 20px = 1h
+                            const input = prompt("Entrez le nombre d'heures (ex: 0.5, 1.2) :", currentValue);
+                    
+                            if (input !== null && !isNaN(input) && input >= 0) {
+                              const hours = parseFloat(input);
+                              const newHeight = Math.min(130, hours * 130); // 1h = 100px, max 1h
+                              bar.style.height = `${newHeight}px`;
+                              bar.querySelector('.value').textContent = `${hours}h`;
+                            }
+                          });
+                        });
+                      </script>
+                  </div>
+
+                
+
+
+
+
+            </div>
+            <div class="progression">
+                <h2>Progression</h2>
+                <input type="week" id="semaine" name="semaine">
+                <div class="donut">[Hypertrophie 100h]</div>
+            </div>
+        </section>
+
+        <section class="comparison">
+            <h2>Profil de Comparaison </h2>
+            <div class="comparison-graph">
+                <div class="box">
+                    <div class="box-profil">
+                        <img src="images.png" alt="Thomas Fletcher">
+                        <p>Votre Profil</p>
+                    </div>
+                    <div class="box-profil-user"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <aside class="profile-sidebar">
+        <div class="user-info">
+            <img src="images.png" alt="Thomas Fletcher">
+            <h3>Taïs Icord</h3>
+            <p>Paname (92), France</p>
+            <div class="info">
+            <div class="info-poids"><span>Poids</span><p>Kg</p></div>
+            <div class="info-taille"><span>Taille</span><p>cm</p></div>
+            <div class="info-age"><span>Age</span><p>ans</p></div>
+        </div>
+        </div>
+
+        <div class="objectives">
+            <h3>Votre Objectif</h3>
+            <div class="Course"><img src="Image (1).png" alt="course-img"><p>Course </p></div>
+           <div class="Poids"><img src="image 9 (1).png" alt="feu-img"><p>Poids</p></div>
+        </div>
+
+
+
+        <h3>Progression par Mois</h3>
+        <div class="monthly-progress">
+            
+        </div>
+      
+        <h3>Programmé</h3>
+        <div class="scheduled">
+            
+            <ul>
+                <li>Entraînement - Fractionné (22 Mar)</li>
+                <li>Entraînement - Pecs/Dos (22 Mar)</li>
+            </ul>
+        </div>
+    </aside>
+</body>
+</html>
