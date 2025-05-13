@@ -2,7 +2,7 @@
 session_start();
 $id_utilisateur = $_SESSION['id_utilisateur']; // exemple : 1
 
-$conn = new mysqli("172.25.192.6", "root", "rootpassword", "my_body_tracker");
+$conn = new mysqli("localhost", "root", "", "mb");
 if ($conn->connect_error) {
     die("Erreur de connexion : " . $conn->connect_error);
 }
@@ -58,20 +58,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Convertir la semaine (format '2025-W15') en un format de date valide (par exemple, le premier jour de la semaine)
         // Convertir la semaine en date (lundi de cette semaine)
-        if (preg_match('/^(\d{4})-W(\d{2})$/', $date_activité, $matches)) {
-            $year = $matches[1];
-            $week = $matches[2];
+       // Récupérer le jour sélectionné
+$jour_activité = isset($_POST['jour_activité']) ? $_POST['jour_activité'] : 'Lundi';
 
-            // Utiliser la fonction strtotime pour obtenir la date du lundi de la semaine
-            $date_activité = date('Y-m-d', strtotime("{$year}-W{$week}-1"));  // Le '1' signifie le lundi de la semaine
-        } else {
-            echo "<script>alert('Erreur: Le format de la semaine est incorrect!');</script>";
-            exit;  // Sortir si le format de semaine n'est pas valide
-        }
+// Convertir semaine + jour en vraie date (format Y-m-d)
+if (preg_match('/^(\d{4})-W(\d{2})$/', $date_activité, $matches)) {
+    $year = $matches[1];
+    $week = $matches[2];
+
+    // Convertir le nom du jour en numéro (1 = lundi, ..., 7 = dimanche)
+    $jours = [
+        'Lundi' => 1,
+        'Mardi' => 2,
+        'Mercredi' => 3,
+        'Jeudi' => 4,
+        'Vendredi' => 5,
+        'Samedi' => 6,
+        'Dimanche' => 7
+    ];
+
+    $jour_numero = $jours[$jour_activité] ?? 1;
+
+    // Calcul de la date exacte (ex: mardi de la semaine 20)
+    $date_activité = date('Y-m-d', strtotime("{$year}-W{$week}-{$jour_numero}"));
+} else {
+    echo "<script>alert('Erreur: Le format de la semaine est incorrect!');</script>";
+    exit;
+}
+
 
         // Préparer la requête d'insertion
-        $query = "INSERT INTO activite_sportive (id_utilisateur, type_activité, date_activité, durée_minutes) 
-                  VALUES (?, ?, ?, ?)";
+        $query = "INSERT INTO activite_sportive (
+    id_utilisateur,
+    `type_activité ( natation , running , musculation )`,
+    date_activité,
+    durée_minutes
+) VALUES (?, ?, ?, ?)";
+
 
         // Préparer la requête SQL
         $stmt = $conn->prepare($query);
@@ -97,7 +120,63 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
 
+// Affichage des activités en fonction de la date choisie dans l'input
+if (isset($_GET['jour']) && !empty($_GET['jour']) && isset($_SESSION['id_utilisateur'])) {
+    $jour_selectionne = $_GET['jour'];
+    $id_utilisateur = $_SESSION['id_utilisateur'];
 
+    $sql = "SELECT `type_activité ( natation , running , musculation )` AS type_activité, durée_minutes 
+            FROM activite_sportive 
+            WHERE id_utilisateur = ? AND date_activité = ?";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("is", $id_utilisateur, $jour_selectionne);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $activites = $result->fetch_all(MYSQLI_ASSOC);
+
+    echo "<div class='recapitulatif'>";
+    if (empty($activites)) {
+    } else {
+        echo "<ul>";
+        foreach ($activites as $act) {
+        }
+        echo "</ul>";
+    }
+    echo "</div>";
+}
+
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_infos'])) {
+    $nouveau_poids = $_POST['nouveau_poids'];
+    $nouvelle_taille = $_POST['nouvelle_taille'];
+    $nouvel_age = $_POST['nouvel_age'];
+
+    $stmt = $conn->prepare("UPDATE utilisateur SET poids = ?, taille = ?, age = ? WHERE id_utilisateur = ?");
+    $stmt->bind_param("iiii", $nouveau_poids, $nouvelle_taille, $nouvel_age, $id_utilisateur);
+    $stmt->execute();
+    echo "<script>alert('Informations mises à jour avec succès'); location.reload();</script>";
+}
+
+
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["field"], $_POST["value"])) {
+    $champ = $_POST["field"];
+    $valeur = (int) $_POST["value"];
+
+    // Protéger contre les champs non valides
+    $champs_autorises = ['poids', 'taille', 'age'];
+    if (in_array($champ, $champs_autorises)) {
+        $stmt = $conn->prepare("UPDATE utilisateur SET $champ = ? WHERE id_utilisateur = ?");
+        $stmt->bind_param("ii", $valeur, $id_utilisateur);
+        $stmt->execute();
+    }
+
+    // Recharger la page après modification
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit();
+}
 
 
 
@@ -454,7 +533,7 @@ img .vector-image{
 
 
 .info-taille span {
-    top: -46px;
+    top: 30px;
     font-weight: 545;
     position: relative;
     left: 2px;
@@ -463,7 +542,7 @@ img .vector-image{
 }
 
 .info-age span {
-    top: -143px;
+    top: 10px;
     font-weight: 545;
     position: relative;
     left: 25px;
@@ -472,31 +551,46 @@ img .vector-image{
 }
 
 .info-poids p {
-    margin-left: -30px;
     font-weight: 550;
-    top: -25px;
+    top: -3px;
+    left: 25px;
     color: #6B6E7B;
-    position: relative;
+    position: absolute;
     font-size: x-large;
+    transition: transform 250ms;
+
 }
+
+.info-poids p:hover {
+    transform: translateY(-10px);}
 
 .info-taille p {
-    margin-left: 5px;
     font-weight: 550;
-    top: -123px;
+    top: -3px;
+    left: 70px;
     color: #6B6E7B;
-    position: relative;
+    position: absolute;
     font-size: x-large;
+    transition: transform 250ms;
+
 }
 
+.info-taille p:hover {
+    transform: translateY(-10px);}
+
 .info-age p {
-    margin-left: 60px;
     font-weight: 550;
-    top: -220px;
+    top: -3px;
+    left: 60px;
     color: #6B6E7B;
-    position: relative;
+    position: absolute;
     font-size: x-large;
+    transition: transform 250ms;
+
 }
+
+.info-age p:hover {
+    transform: translateY(-10px);}
 
 
 
@@ -562,14 +656,6 @@ img .vector-image{
     list-style: none;
     padding: 0;
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -739,6 +825,33 @@ img .vector-image{
 
 
 
+.récap {
+    width: 210px;
+    height: 60px;
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-left: -10px;
+    left: -37%;
+    top: -105%;
+    transition: transform 250ms;
+}
+
+
+.récap p {
+    margin-left: 17%;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+.msg {
+    margin-left: 17%;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+
 
 
 
@@ -763,78 +876,111 @@ img .vector-image{
         <section class="stats">
             <div class="card"><img src="wallet.png" alt="running-img"> <span>POIDS</span><p><?php echo htmlspecialchars($poids); ?>     kg</p></div>
             <div class="card highlighted"><img src="wallet.png" alt="running-img"> <span>TAILLE</span><p><?php echo htmlspecialchars($taille); ?>   cm</p></div>
-            <div class="card purple"><img src="Water.png" alt="coeur-img"><span>AGE</span><p><?php echo htmlspecialchars($age); ?>   ans</p> </div>
+            <div class="card purple">
+    <img src="Water.png" alt="coeur-img">
+    <span>IMC</span>
+    <p>
+        <?php
+if (isset($poids, $taille) && $taille > 0) {
+    $imc = round($poids / pow($taille / 100, 2), 1);
+    echo " {$imc} IMC <br>";
+
+    echo "<div style='position: absolute; bottom: 870px; width: 18%; text-align: center;'>";
+
+    if ($imc < 18.5) {
+        echo "<small style='color: #ffc107;'>Vous êtes en sous-poids.</small>";
+    } elseif ($imc < 25) {
+        echo "<small style='color: #28a745;'>Votre poids est normal.</small>";
+    } elseif ($imc < 30) {
+        echo "<small style='color: #fd7e14;'>Vous êtes en surpoids.</small>";
+    } else {
+        echo "<small style='color: #dc3545;'>Attention : vous êtes en obésité.</small>";
+    }
+    echo "</div>";
+}
+?>
+    </p>
+</div>
+
         </section>
 
 <section class="activity-progress">
     <div class="activity">
         <h2>Votre Activité</h2>
 
-        <!-- Sélection de la semaine -->
+        <!-- Semaine -->
         <input type="week" id="semaine" name="semaine" required>
 
         <div class="chart">
-            <!-- Graphique pour les jours de la semaine -->
-            <div class="bar h20" data-jour="Lundi" data-activity="Running"><span>Lun</span></div>
-            <div class="bar h60" data-jour="Mardi" data-activity="Musculation"><span>Mar</span></div>
-            <div class="bar h40" data-jour="Mercredi" data-activity="Natation"><span>Mer</span></div>
-            <div class="bar h60" data-jour="Jeudi" data-activity="Running"><span>Jeu</span></div>
-            <div class="bar h100 highlight" data-jour="Vendredi" data-activity="Musculation"><span>Ven</span></div>
-            <div class="bar h60" data-jour="Samedi" data-activity="Natation"><span>Sam</span></div>
-            <div class="bar h40" data-jour="Dimanche" data-activity="Running"><span>Dim</span></div>
+            <div class="bar h20" data-jour="Lundi"><span>Lun</span></div>
+            <div class="bar h60" data-jour="Mardi"><span>Mar</span></div>
+            <div class="bar h40" data-jour="Mercredi"><span>Mer</span></div>
+            <div class="bar h60" data-jour="Jeudi"><span>Jeu</span></div>
+            <div class="bar h100 highlight" data-jour="Vendredi"><span>Ven</span></div>
+            <div class="bar h60" data-jour="Samedi"><span>Sam</span></div>
+            <div class="bar h40" data-jour="Dimanche"><span>Dim</span></div>
         </div>
 
-        <!-- Formulaire caché pour envoyer les données à la base -->
-        <form id="activityForm" method="POST" style="display: none;">
-            <!-- Champs cachés mis à jour -->
-            <input type="hidden" name="type_activité" id="activityType">
-            <input type="hidden" name="semaine" id="semaineInput"> <!-- Ce sera notre "date_activité" -->
-            <input type="hidden" name="durée_minutes" id="hours">
-            <button type="submit">Enregistrer la séance</button>
-        </form>
+        <!-- Choix d'activité -->
+        <div class="Course-activite activite" data-activite="Course">
+            <img src="Image (1).png" alt="course-img"><p>Course</p>
+        </div>
+        <div class="Muscu-activite activite" data-activite="Musculation">
+            <img src="Image (1).png" alt="course-img"><p>Musculation</p>
+        </div>
+        <div class="Nat-activite activite" data-activite="Natation">
+            <img src="Image (1).png" alt="course-img"><p>Natation</p>
+        </div>
 
+        <!-- Formulaire caché -->
+        <form id="activityForm" method="POST" style="display: none;">
+            <input type="hidden" name="type_activité" id="activityType">
+            <input type="hidden" name="jour_activité" id="dayInput">
+            <input type="hidden" name="semaine" id="semaineInput">
+            <input type="hidden" name="durée_minutes" id="hours">
+        </form>
     </div>
 </section>
 
 <script>
-    const bars = document.querySelectorAll('.bar');
-    const form = document.getElementById('activityForm');
-    const selectedDay = document.getElementById('selectedDay');
-    const activityType = document.getElementById('activityType');
-    const hoursInput = document.getElementById('hours');
-    const semaineInput = document.getElementById('semaineInput');
+    let selectedDay = null;
 
-    bars.forEach(bar => {
+    // Quand on clique sur un jour
+    document.querySelectorAll('.bar').forEach(bar => {
         bar.addEventListener('click', () => {
-            const jour = bar.getAttribute('data-jour');
-            const activity = bar.getAttribute('data-activity');
+            selectedDay = bar.getAttribute('data-jour');
+            alert("Jour sélectionné : " + selectedDay + ". Veuillez maintenant choisir une activité.");
+        });
+    });
 
-            // Demander à l'utilisateur combien d'heures il a fait pour cette activité
-            const hours = prompt(`Entrez le nombre d'heures pour ${jour} (${activity}):`, '1');
-            
-            if (hours !== null && !isNaN(hours) && hours >= 0) {
-                // Limiter la hauteur à 130px maximum
-                const newHeight = Math.min(130, hours * 130); // 1h = 130px max
-                bar.style.height = `${newHeight}px`;
+    // Quand on clique sur une activité
+    document.querySelectorAll('.activite').forEach(actDiv => {
+        actDiv.addEventListener('click', () => {
+            if (!selectedDay) {
+                alert("Veuillez d'abord sélectionner un jour.");
+                return;
+            }
 
-                // Remplir les champs cachés du formulaire
-                activityType.value = activity;
-                hoursInput.value = hours;
-                semaineInput.value = document.getElementById('semaine').value; // Semaine = date_activité
+            const type = actDiv.getAttribute('data-activite');
+            const duree = prompt("Combien d'heures pour " + type + " le " + selectedDay + " ?", "1");
 
-                // Afficher les valeurs dans la console pour débogage
-                console.log("Type d'activité: " + activityType.value);
-                console.log("Semaine (date_activité): " + semaineInput.value);
-                console.log("Heures: " + hoursInput.value);
+            if (duree !== null && !isNaN(duree) && duree >= 0) {
+                document.getElementById('activityType').value = type;
+                document.getElementById('dayInput').value = selectedDay;
+                document.getElementById('semaineInput').value = document.getElementById('semaine').value;
+                document.getElementById('hours').value = duree * 60;
 
-                // Soumettre le formulaire
-                form.submit();
+                document.getElementById('activityForm').submit();
             } else {
-                alert("Veuillez entrer un nombre valide d'heures.");
+                alert("Durée invalide.");
             }
         });
     });
 </script>
+
+
+
+
 
 
 
@@ -858,11 +1004,48 @@ img .vector-image{
             <img src="images.png" alt="Thomas Fletcher">
             <h3><?php echo htmlspecialchars($prenom); ?>  <?php echo htmlspecialchars($nom); ?></h3>
             <p>France</p>
-            <div class="info">
-            <div class="info-poids"><span>Poids</span><p><?php echo htmlspecialchars($poids); ?> kg</p></div>
-            <div class="info-taille"><span>Taille</span><p><?php echo htmlspecialchars($taille); ?> cm</p></div>
-            <div class="info-age"><span>Age</span><p><?php echo htmlspecialchars($age); ?> ans</p></div>
-        </div>
+           <div class="info">
+    <div class="info-poids editable" data-field="poids">
+        <span>Poids</span>
+        <p><?php echo htmlspecialchars($poids); ?> kg</p>
+    </div>
+    <div class="info-taille editable" data-field="taille">
+        <span>Taille</span>
+        <p><?php echo htmlspecialchars($taille); ?> cm</p>
+    </div>
+    <div class="info-age editable" data-field="age">
+        <span>Âge</span>
+        <p><?php echo htmlspecialchars($age); ?> ans</p>
+    </div>
+
+    <!-- Formulaire caché -->
+<form id="updateForm" method="POST" action="" style="display: none;">
+        <input type="hidden" name="field" id="fieldInput">
+        <input type="hidden" name="value" id="valueInput">
+    </form>
+</div>
+<script>
+document.querySelectorAll('.editable').forEach(item => {
+    item.addEventListener('click', () => {
+        const field = item.getAttribute('data-field');
+        const label = item.querySelector('span').textContent;
+        const oldValue = item.querySelector('p').textContent.match(/\d+/)[0];
+
+        const newValue = prompt(`Modifier ${label} :`, oldValue);
+        if (newValue !== null && !isNaN(newValue) && newValue > 0) {
+            document.getElementById('fieldInput').value = field;
+            document.getElementById('valueInput').value = parseInt(newValue);
+            document.getElementById('updateForm').submit();
+        } else {
+            alert("Valeur invalide.");
+        }
+    });
+});
+</script>
+
+
+
+
         </div>
 
         <div class="objectives">
@@ -873,19 +1056,33 @@ img .vector-image{
 
 
 
-        <h3>Progression par Mois</h3>
-        <div class="monthly-progress">
-            
-        </div>
-      
-        <h3>Programmé</h3>
-        <div class="scheduled">
-            
+        <h3>récapitulatif activité</h3>
+<div class="monthly-progress">
+    <label for="date">Choisir une date :</label>
+    <form method="get">
+        <input type="date" name="jour" id="date" onchange="this.form.submit()">
+    </form>
+
+    <?php if (isset($activites)) : ?>
+        <h4>Activité(s) du <?php echo htmlspecialchars($jour_selectionne); ?> :</h4>
+        <?php if (empty($activites)) : ?>
+            <p>Aucune activité enregistrée pour ce jour.</p>
+        <?php else : ?>
             <ul>
-                <li>Entraînement - Fractionné (22 Mar)</li>
-                <li>Entraînement - Pecs/Dos (22 Mar)</li>
+                
+                <div class="récap"><p><?php echo htmlspecialchars($act['type_activité']) . " – " . (int)$act['durée_minutes'] . " min"; ?></p></div>
+                
             </ul>
-        </div>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>
+
+
+
+
+
+
+
     </aside>
 </body>
 </html>
